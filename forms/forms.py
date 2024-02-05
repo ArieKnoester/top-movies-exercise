@@ -21,3 +21,11 @@ class EditMovieForm(FlaskForm):
         validators=[DataRequired()]
     )
     submit = SubmitField(label="Done")
+
+
+class AddMovieForm(FlaskForm):
+    title = StringField(
+        label="Movie Title",
+        validators=[DataRequired()]
+    )
+    submit = SubmitField(label="Add Movie")

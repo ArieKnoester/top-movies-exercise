@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from models.movie import Movie, db
-from forms.forms import EditMovieForm
+from forms.forms import AddMovieForm, EditMovieForm
 import requests
 from dotenv import load_dotenv
 import os
@@ -55,7 +55,8 @@ def home():
 
 @app.route("/add")
 def add():
-    return render_template("add.html")
+    add_form = AddMovieForm()
+    return render_template("add.html", form=add_form)
 
 
 @app.route("/edit/<int:movie_id>", methods=["GET", "POST"])
