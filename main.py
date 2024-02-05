@@ -14,6 +14,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///movies.db'
 Bootstrap5(app)
 db.init_app(app)
 
+# movies.db will appear in './instance/' directory when run for the first time.
+# The directory should be created automatically.
 with app.app_context():
     db.create_all()
 
