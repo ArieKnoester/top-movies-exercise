@@ -1,9 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from models.movie import Movie, db
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from forms.forms import EditMovieForm
 import requests
 from dotenv import load_dotenv
 import os
@@ -53,6 +51,35 @@ with app.app_context():
 def home():
     all_movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
     return render_template("index.html", movies=all_movies)
+
+
+@app.route("/add")
+def add():
+    return render_template("add.html")
+
+
+@app.route("/edit/<int:movie_id>", methods=["GET", "POST"])
+def edit(movie_id):
+    edit_form = EditMovieForm()
+
+    if edit_form.validate_on_submit():
+        with app.app_context():
+            movie_to_edit = db.session.execute(db.select(Movie).filter_by(id=movie_id)).scalar_one()
+            movie_to_edit.rating = request.form["rating"]
+            movie_to_edit.review = request.form["review"]
+            db.session.commit()
+            return redirect(url_for('home'))
+
+    return render_template("edit.html", form=edit_form)
+
+
+@app.route("/delete/<int:movie_id>")
+def delete(movie_id):
+    with app.app_context():
+        movie_to_delete = db.session.execute(db.select(Movie).filter_by(id=movie_id)).scalar_one()
+        db.session.delete(movie_to_delete)
+        db.session.commit()
+        return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
