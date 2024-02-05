@@ -58,13 +58,14 @@ def add():
     return render_template("add.html", form=add_form)
 
 
-@app.route("/edit/<int:movie_id>", methods=["GET", "POST"])
-def edit(movie_id):
+@app.route("/edit", methods=["GET", "POST"])
+def edit():
     edit_form = EditMovieForm()
 
     if edit_form.validate_on_submit():
         with app.app_context():
-            movie_to_edit = db.session.execute(db.select(Movie).filter_by(id=movie_id)).scalar_one()
+            movie_id = request.args.get("movie_id")
+            movie_to_edit = db.get_or_404(Movie, movie_id)
             movie_to_edit.rating = request.form["rating"]
             movie_to_edit.review = request.form["review"]
             db.session.commit()
@@ -73,10 +74,11 @@ def edit(movie_id):
     return render_template("edit.html", form=edit_form)
 
 
-@app.route("/delete/<int:movie_id>")
-def delete(movie_id):
+@app.route("/delete")
+def delete():
     with app.app_context():
-        movie_to_delete = db.session.execute(db.select(Movie).filter_by(id=movie_id)).scalar_one()
+        movie_id = request.args.get("movie_id")
+        movie_to_delete = db.get_or_404(Movie, movie_id)
         db.session.delete(movie_to_delete)
         db.session.commit()
         return redirect(url_for('home'))
