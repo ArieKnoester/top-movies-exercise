@@ -6,8 +6,16 @@ import requests
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv(".env")
+TMDB_SEARCH_BY_TITLE = "https://api.themoviedb.org/3/search/movie"
+TMDB_MOVIE_DETAILS = " https://api.themoviedb.org/3/movie/"
+TMDB_READ_ACCESS_TOKEN = os.environ["TMDB_READ_ACCESS_TOKEN"]
+TMDB_HEADER = {
+    "accept": "application/json",
+    "Authorization": f"Bearer {TMDB_READ_ACCESS_TOKEN}"
+}
+
+
 app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///movies.db'
@@ -54,9 +62,19 @@ def home():
     return render_template("index.html", movies=all_movies)
 
 
-@app.route("/add")
+@app.route("/add", methods=["GET", "POST"])
 def add():
     add_form = AddMovieForm()
+    if add_form.validate_on_submit():
+        title = request.form["title"]
+        params = {
+            "query": f"{title}",
+            "include_adult": "false",
+            "language": "en-US"
+        }
+        response = requests.get(url=TMDB_SEARCH_BY_TITLE, headers=TMDB_HEADER, params=params)
+        search_results = response.json()["results"]
+        return render_template("select.html", results=search_results)
     return render_template("add.html", form=add_form)
 
 
@@ -84,6 +102,25 @@ def delete():
         db.session.delete(movie_to_delete)
         db.session.commit()
         return redirect(url_for('home'))
+
+
+@app.route("/movie_details")
+def movie_details():
+    tmdb_id = request.args.get("id")
+    response = requests.get(url=f"{TMDB_MOVIE_DETAILS}{tmdb_id}", headers=TMDB_HEADER)
+    details = response.json()
+
+    movie_to_insert = Movie(
+        title=details['title'],
+        year=details['release_date'].split("-")[0],
+        description=details['overview'],
+        img_url=f"https://image.tmdb.org/t/p/w500{details['poster_path']}"
+    )
+    with app.app_context():
+        db.session.add(movie_to_insert)
+        db.session.commit()
+        new_movie_id = movie_to_insert.id
+    return redirect(url_for("edit", movie_id=new_movie_id))
 
 
 if __name__ == '__main__':
