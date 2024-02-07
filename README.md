@@ -3,7 +3,8 @@
 ## Description:
 Another Python course exercise building on concepts covered in previous exercises. This a 'Top 10 Movies'
 website which allows the user to add, delete, and update movie 'ratings' and 'reviews'. 'styles.css' was
-provided by the course as was some starting code (See Initial commit).
+provided by the course as was some starting code (See Initial commit). Data for movies come from
+The Movie Database's api (https://themoviedb.com)
 
 Key modules:
 - Flask (and Jinja templating)

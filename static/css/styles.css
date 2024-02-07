@@ -212,3 +212,13 @@
  .release_date {
 	 font-weight: normal;
 }
+.attribution {
+    margin-top: 80px;
+    margin-bottom: 80px;
+}
+.tmdb_logo {
+    width: calc(33% - 3rem);
+	min-width: calc(33% - 3rem);
+	height: 150px;
+	min-height: 150px;
+}

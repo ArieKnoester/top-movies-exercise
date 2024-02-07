@@ -32,7 +32,12 @@
     {% endfor %}
 </div>
 <div class="container text-center add">
-<a href="{{ url_for('add') }}" class="button">Add Movie</a>
+  <a href="{{ url_for('add') }}" class="button">Add Movie</a>
+</div>
+<div class="container text-center attribution">
+  <hr>
+  <p>Movie data provided by</p>
+  <img class="tmdb_logo" src="{{ url_for('static', filename='images/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg') }}">
 </div>
 
 {% endblock %}
