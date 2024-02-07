@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv(".env")
+# https://developer.themoviedb.org/reference/intro/getting-started
 TMDB_SEARCH_BY_TITLE = "https://api.themoviedb.org/3/search/movie"
 TMDB_MOVIE_DETAILS = " https://api.themoviedb.org/3/movie/"
 TMDB_READ_ACCESS_TOKEN = os.environ["TMDB_READ_ACCESS_TOKEN"]
@@ -27,7 +28,9 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# Add a few example records to the db to start.
+# Uncomment these lines on first run of this code to add a few example records to the db to start.
+# Comment these lines out after the first run to avoid errors with the UNIQUE constraint on the
+# Movie.title column.
 # new_movie = Movie(
 #     title="Phone Booth",
 #     year=2002,
@@ -88,6 +91,14 @@ def edit():
             movie_to_edit = db.get_or_404(Movie, movie_id)
             movie_to_edit.rating = request.form["rating"]
             movie_to_edit.review = request.form["review"]
+
+            movies_by_rating = db.session.execute(db.select(Movie).order_by(Movie.rating)).scalars()
+            row_count = db.session.query(Movie).count()
+
+            for movie in movies_by_rating:
+                movie.ranking = row_count
+                row_count -= 1
+
             db.session.commit()
             return redirect(url_for('home'))
 
