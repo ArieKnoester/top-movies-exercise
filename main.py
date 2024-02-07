@@ -28,9 +28,10 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# Uncomment these lines on first run of this code to add a few example records to the db to start.
+# It's not necessary but, you can uncomment these lines on first run of this code to add a few
+# example records to the db to start.
 # Comment these lines out after the first run to avoid errors with the UNIQUE constraint on the
-# Movie.title column.
+# Movie.title column (See ./models/movie.py)
 # new_movie = Movie(
 #     title="Phone Booth",
 #     year=2002,
