@@ -1,7 +1,5 @@
 # top-movies-exercise
 
-Work in progress
-
 ## Description:
 Another Python course exercise building on concepts covered in previous exercises. This a 'Top 10 Movies'
 website which allows the user to add, delete, and update movie 'ratings' and 'reviews'. 'styles.css' was
@@ -15,3 +13,9 @@ Key modules:
 - Flask_WTF
 - flask_sqlalchemy
 - SQLAlchemy
+
+### Notes:
+- Movies are sorted by **ranking** in descending order.
+- When a user edits their **raiting** of a movie, **ranking** is updated automatically.
+- When a user adds a movie to the list, they are prompted to add a rating and a short review
+before it is committed to the database. Rating and review fields are required inputs.
